@@ -1,69 +1,67 @@
-alias Enforcer Uplights DayNight Guard
-description -
-  Forces uplights ON at night and OFF during the day, regardless of manual
-  presses.
-triggers
-  - trigger sun
-    event sunset
-    offset 0
-    id trigger_sunset
-  - trigger sun
-    event sunrise
-    offset 0
-    id trigger_sunrise
-  - trigger state
-    entity_id switch.up_lights
-    from on
-    to off
-    id turned_off_manually
-  - trigger state
-    entity_id switch.up_lights
-    from off
-    to on
-    id turned_on_manually
-conditions []
-actions
-  - choose
-      - conditions
-          - condition or
-            conditions
-              - condition trigger
-                id trigger_sunset
-              - condition state
-                entity_id sun.sun
-                state below_horizon
-        sequence
-          - action switch.turn_on
-            target
-              entity_id switch.up_lights
-      - conditions
-          - condition or
-            conditions
-              - condition trigger
-                id trigger_sunrise
-              - condition state
-                entity_id sun.sun
-                state above_horizon
-        sequence
-          - action switch.turn_off
-            target
-              entity_id switch.up_lights
-  - delay "00:15:00"
-  - choose
-      - conditions
-          - condition state
-            entity_id sun.sun
-            state below_horizon
-        sequence
-          - action switch.turn_on
-            target
-              entity_id switch.up_lights
-      - conditions
-          - condition state
-            entity_id sun.sun
-            state above_horizon
-        sequence
-          - action switch.turn_off
-            target
-              entity_id switch.up_lights
-mode restart
+alias: Enforcer Uplights DayNight Guard
+description: "Forces uplights ON at night and OFF during the day, regardless of manual presses."
+mode: restart
+triggers:
+  - trigger: sun
+    event: sunset
+    offset: 0
+    id: trigger_sunset
+  - trigger: sun
+    event: sunrise
+    offset: 0
+    id: trigger_sunrise
+  - trigger: state
+    entity_id: switch.up_lights
+    from: "on"
+    to: "off"
+    id: turned_off_manually
+  - trigger: state
+    entity_id: switch.up_lights
+    from: "off"
+    to: "on"
+    id: turned_on_manually
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: or
+            conditions:
+              - condition: trigger
+                id: trigger_sunset
+              - condition: state
+                entity_id: sun.sun
+                state: below_horizon
+        sequence:
+          - action: switch.turn_on
+            target:
+              entity_id: switch.up_lights
+      - conditions:
+          - condition: or
+            conditions:
+              - condition: trigger
+                id: trigger_sunrise
+              - condition: state
+                entity_id: sun.sun
+                state: above_horizon
+        sequence:
+          - action: switch.turn_off
+            target:
+              entity_id: switch.up_lights
+  - delay: "00:15:00"
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+        sequence:
+          - action: switch.turn_on
+            target:
+              entity_id: switch.up_lights
+      - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: above_horizon
+        sequence:
+          - action: switch.turn_off
+            target:
+              entity_id: switch.up_lights
