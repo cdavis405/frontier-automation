@@ -1,0 +1,38 @@
+alias: Chris Fan Heating Mode Controller
+description: "Sets ceiling fan to full speed when heating, 50% when not heating."
+mode: single
+triggers:
+  - trigger: state
+    entity_id: climate.esp32_thermostat_house_thermostat
+    attribute: hvac_action
+    id: hvac_action_changed
+  - trigger: homeassistant
+    event: start
+    id: ha_start
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: climate.esp32_thermostat_house_thermostat
+            attribute: hvac_action
+            state: heating
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.chris_fan
+            data:
+              brightness_pct: 100
+      - conditions:
+          - condition: not
+            conditions:
+              - condition: state
+                entity_id: climate.esp32_thermostat_house_thermostat
+                attribute: hvac_action
+                state: heating
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.chris_fan
+            data:
+              brightness_pct: 50
