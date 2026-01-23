@@ -1,5 +1,5 @@
 alias: Chris Fan Heating Mode Controller
-description: "Sets ceiling fan to full speed when heating, 50% when not heating."
+description: "Sets ceiling fan to full speed when heating or temp > 71°F, 50% otherwise. Periodic checks every 5 minutes."
 mode: single
 triggers:
   - trigger: state
@@ -9,30 +9,36 @@ triggers:
   - trigger: homeassistant
     event: start
     id: ha_start
+  - trigger: state
+    entity_id: sensor.esp32_th_chris_bedroom_chris_bedroom_temperature
+    id: temp_changed
+  - trigger: time_pattern
+    minutes: "/5"
+    id: periodic_check
 conditions: []
 actions:
   - choose:
+      # Fan to MAX (100%) when heating OR temperature > 71°F
       - conditions:
-          - condition: state
-            entity_id: climate.esp32_thermostat_house_thermostat
-            attribute: hvac_action
-            state: heating
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: climate.esp32_thermostat_house_thermostat
+                attribute: hvac_action
+                state: heating
+              - condition: numeric_state
+                entity_id: sensor.esp32_th_chris_bedroom_chris_bedroom_temperature
+                above: 71
         sequence:
           - action: light.turn_on
             target:
               entity_id: light.chris_fan
             data:
               brightness_pct: 100
-      - conditions:
-          - condition: not
-            conditions:
-              - condition: state
-                entity_id: climate.esp32_thermostat_house_thermostat
-                attribute: hvac_action
-                state: heating
-        sequence:
-          - action: light.turn_on
-            target:
-              entity_id: light.chris_fan
-            data:
-              brightness_pct: 50
+    # Default: Fan to 50% when not heating AND temperature <= 71°F
+    default:
+      - action: light.turn_on
+        target:
+          entity_id: light.chris_fan
+        data:
+          brightness_pct: 50
