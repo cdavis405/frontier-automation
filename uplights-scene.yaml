@@ -65,7 +65,7 @@ actions:
                 - light.uplight3
                 - light.uplight4
             data:
-              effect: Valentine
+              effect: Romance
               brightness: 255
           - delay: "00:00:02"
           - action: number.set_value
