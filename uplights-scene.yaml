@@ -9,6 +9,7 @@ triggers:
       - light.uplight2
       - light.uplight3
       - light.uplight4
+      - light.wiz_par38
     to: "on"
     from:
       - unavailable
@@ -28,6 +29,12 @@ conditions:
       - condition: state
         entity_id: light.uplight2
         state: "on"
+      - condition: state
+        entity_id: light.uplight3
+        state: "on"
+      - condition: state
+        entity_id: light.uplight4
+        state: "on"
 actions:
   - choose:
       - conditions:
@@ -37,12 +44,20 @@ actions:
           - action: light.turn_on
             target:
               entity_id:
+                - light.uplight1
+                - light.uplight2
+                - light.uplight3
+                - light.uplight4
                 - light.wiz_par38
             data:
               transition: 1
               brightness_pct: 80
               rgb_color: [255, 0, 0]
     default:
+      - action: light.turn_off
+        target:
+          entity_id:
+            - light.wiz_par38
       - action: light.turn_on
         target:
           entity_id:
