@@ -40,8 +40,8 @@ actions:
                 - light.wiz_par38
             data:
               transition: 1
-              brightness_pct: 100
-              rgb_color: [255, 0, 15]
+              brightness_pct: 80
+              rgb_color: [255, 0, 0]
     default:
       - action: light.turn_on
         target:
