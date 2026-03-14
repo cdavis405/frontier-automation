@@ -1,7 +1,7 @@
 alias: "Uplights: Holiday Scene Manager (Final Hardened)"
 description: >-
   Applies specific effects based on date. Includes double-tap speed enforcement
-  for UDP reliability. Valentine Max (Feb 14-15), Fireplace default.
+  for UDP reliability. St. Patrick's Day green (Mar 14-17), warm white default.
 triggers:
   - trigger: state
     entity_id:
@@ -39,7 +39,7 @@ actions:
   - choose:
       - conditions:
           - condition: template
-            value_template: "{{ now().month == 2 and now().day >= 14 and now().day <= 15 }}"
+            value_template: "{{ now().month == 3 and now().day >= 14 and now().day <= 17 }}"
         sequence:
           - action: light.turn_on
             target:
@@ -51,13 +51,9 @@ actions:
                 - light.wiz_par38
             data:
               transition: 1
-              brightness_pct: 80
-              rgb_color: [255, 0, 0]
+              brightness_pct: 100
+              rgb_color: [0, 255, 0]
     default:
-      - action: light.turn_off
-        target:
-          entity_id:
-            - light.wiz_par38
       - action: light.turn_on
         target:
           entity_id:
@@ -65,17 +61,9 @@ actions:
             - light.uplight2
             - light.uplight3
             - light.uplight4
+            - light.wiz_par38
         data:
-          effect: Fireplace
-          brightness: 200
-      - delay: "00:00:02"
-      - action: number.set_value
-        target:
-          entity_id:
-            - number.uplight1_effect_speed
-            - number.uplight2_effect_speed
-            - number.uplight3_effect_speed
-            - number.uplight4_effect_speed
-        data:
-          value: 50
+          transition: 1
+          brightness_pct: 100
+          color_temp_kelvin: 2700
 mode: restart
